@@ -13,6 +13,7 @@ import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 
 const Feedback = ({ params }) => {
+  const [overallRating, setOverallRating] = useState(0);
   const [feedbackList, setFeedbackList] = useState([]);
   const router = useRouter();
   useEffect(() => {
@@ -26,6 +27,14 @@ const Feedback = ({ params }) => {
       .orderBy(UserAnswer.id);
     console.log("🚀 ~ file: page.jsx:11 ~ GetFeedback ~ result:", result);
     setFeedbackList(result);
+
+    const totalRating = result.reduce(
+      (sum, item) => sum + Number(item.rating || 0),
+      0
+    );
+    const avgRating =
+      result.length > 0 ? (totalRating / result.length).toFixed(1) : 0;
+    setOverallRating(avgRating);
   };
   return (
     <div className="p-10">
@@ -37,8 +46,8 @@ const Feedback = ({ params }) => {
         </h2>
       ) : (
         <>
-          <h2 className="text-primary text-lg my-2">
-            Your overall interview rating: <strong>1/10</strong>
+          <h2 className="text-primary text-lg my-3">
+            Your overall interview rating: <strong>{overallRating}/10</strong>
           </h2>
           <h2 className="text-sm text-gray-500">
             Find below interview questions with coreect answers,Your answer and
